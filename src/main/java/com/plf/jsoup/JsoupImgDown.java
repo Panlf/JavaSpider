@@ -21,7 +21,7 @@ public class JsoupImgDown {
 		// String html = "<html><head><title>First parse</title></head>"
 		// + "<body><p id='kky'>Parsed HTML into a doc.</p></body></html>";
 		// Document doc = Jsoup.parse(html);
-		// Element body = doc.body();//获取body里面的东西
+		// Element body = doc.body();
 		// System.out.println(body);
 		// System.out.println(doc.getElementById("kky").text());
 		try {

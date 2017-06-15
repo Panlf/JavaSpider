@@ -21,7 +21,7 @@ public class JsoupTextDown {
 			if(doc!=null){
 				Elements links=doc.getElementById("list").select("dd>a[href]");
 				for (Element link : links) {
-					FileWriter fw=new FileWriter("E:\\Ê¥Ğæ.txt",true);
+					FileWriter fw=new FileWriter("E:\\åœ£å¢Ÿ.txt",true);
 					BufferedWriter bufw=new BufferedWriter(fw);
 					Thread.sleep(1000);
 					String path="http://www.biqudu.com"+link.attr("href");
@@ -43,7 +43,7 @@ public class JsoupTextDown {
 		}
 	}
 	
-	//»ñÈ¡ÌâÄ¿ºÍÕıÎÄ
+	//è·å–é¢˜ç›®å’Œæ­£æ–‡
 	public static Map<String,String> downText(String path){
 		Map<String,String> map=new Hashtable<String,String>();
 		map.put("title", "");
@@ -51,8 +51,8 @@ public class JsoupTextDown {
 		try{
 			Document doc = Jsoup.connect(path)
 					.header("User-Agent", "Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:49.0) Gecko/20100101 Firefox/49.0")
-					.header("Connection", "close")//Èç¹ûÊÇÕâÖÖ·½Ê½£¬ÕâÀïÎñ±Ø´øÉÏ
-					.timeout(50000)//³¬Ê±Ê±¼ä
+					.header("Connection", "close")//å¦‚æœæ˜¯è¿™ç§æ–¹å¼ï¼Œè¿™é‡ŒåŠ¡å¿…å¸¦ä¸Š
+					.timeout(50000)//è¶…æ—¶æ—¶é—´
 					.get();
 			String text="",title="";
 			if(doc!=null){
@@ -71,16 +71,16 @@ public class JsoupTextDown {
 	}
 	
 	public static String replace(String str){
-		str = str.replace("&ldquo;", "¡°");
-        str = str.replace("&rdquo;", "¡±");
+		str = str.replace("&ldquo;", "â€œ");
+        str = str.replace("&rdquo;", "â€");
         str = str.replace("&nbsp;", " ");
-        str = str.replace("hellip;", "¡­");
+        str = str.replace("hellip;", "â€¦");
         str = str.replace("&amp;", "");
         str = str.replace("&", "");
         str = str.replace("&#39;", "'");
-        str = str.replace("&rsquo;", "¡¯");
-        str = str.replace("&mdash;", "¡ª");
-        str = str.replace("&ndash;", "¨C");
+        str = str.replace("&rsquo;", "â€™");
+        str = str.replace("&mdash;", "â€”");
+        str = str.replace("&ndash;", "â€“");
         str = str.replace("$#65279","");
 		return str;
 	}
