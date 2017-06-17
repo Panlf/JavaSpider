@@ -4,6 +4,7 @@ import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang3.StringEscapeUtils;
@@ -12,35 +13,30 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import com.pojo.Novel;
+import com.service.NovelService;
+
 public class JsoupTextDown {
 
-	public static void main(String[] args) throws IOException, InterruptedException {
-		// TODO Auto-generated method stub
-		try {
-			Document doc = Jsoup.connect("http://www.biqudu.com/43_43821/").get();
-			if(doc!=null){
-				Elements links=doc.getElementById("list").select("dd>a[href]");
-				for (Element link : links) {
-					FileWriter fw=new FileWriter("E:\\圣墟.txt",true);
-					BufferedWriter bufw=new BufferedWriter(fw);
-					Thread.sleep(1000);
-					String path="http://www.biqudu.com"+link.attr("href");
-					String title=link.text();
-					System.out.println(path+"---"+title);
-					Map<String,String> content=downText(path);
-					bufw.write(content.get("title"));
-					System.out.println(content.get("title"));
-					bufw.newLine();
-					bufw.write(content.get("text"));
-					bufw.newLine();
-					bufw.flush();
-					bufw.close();
+	public static void main(String[] args) throws Exception {
+		Document doc = Jsoup.connect("http://www.biqudu.com/16_16088/").get();
+		if(doc!=null){
+			Elements links=doc.getElementById("list").select("dd>a[href]");
+			for (Element link : links) {
+				Thread.sleep(2000);
+				String path="http://www.biqudu.com"+link.attr("href");
+				String title=link.text();
+				System.out.println(path+"---"+title);
+				if(NovelService.selectNovelURl(path)){
+					continue;
 				}
+				Map<String,String> content=downText(path);
+				NovelService.insertNovel(content.get("title"),path,content.get("text"));
+				System.out.println(content.get("title"));	
 			}
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
 		}
+		updateTheNull();
+		writeTheText("最强反派系统.txt");
 	}
 	
 	//获取题目和正文
@@ -70,6 +66,25 @@ public class JsoupTextDown {
 		}
 	}
 	
+	//写入txt文件
+	public static void writeText(List<Novel> novelList,String textName){
+		try {
+			FileWriter fw=new FileWriter("E:\\"+textName,true);
+			BufferedWriter bufw=new BufferedWriter(fw);
+			for (Novel novel : novelList) {
+				bufw.write(novel.getTitle());
+				bufw.newLine();
+				bufw.write(novel.getText());
+				bufw.newLine();
+				bufw.flush();
+			}
+			bufw.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
 	public static String replace(String str){
 		str = str.replace("&ldquo;", "“");
         str = str.replace("&rdquo;", "”");
@@ -83,5 +98,21 @@ public class JsoupTextDown {
         str = str.replace("&ndash;", "–");
         str = str.replace("$#65279","");
 		return str;
+	}
+	
+	public static void updateTheNull(){
+		List<Novel> list=NovelService.selectNovelNUll();
+		if(list.size()!=0){
+			for (Novel novel : list) {
+				Map<String,String> map=JsoupTextDown.downText(novel.getUrl());
+				System.out.println(novel.getId()+"+++"+map.get("title"));
+				NovelService.updateNovel(novel.getId(), map.get("title"), map.get("text"));
+			}
+		}
+	}
+	
+	public static void writeTheText(String textname){
+		List<Novel> novelList=NovelService.selectNovel();
+		JsoupTextDown.writeText(novelList,textname);
 	}
 }
