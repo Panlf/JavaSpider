@@ -87,16 +87,20 @@ public class JsoupTextDown {
 	
 	public static String replace(String str){
 		str = str.replace("&ldquo;", "“");
+		str = str.replace("ldquo;", "“");
         str = str.replace("&rdquo;", "”");
+        str = str.replace("rdquo;", "”");
         str = str.replace("&nbsp;", " ");
         str = str.replace("hellip;", "…");
         str = str.replace("&amp;", "");
         str = str.replace("&", "");
         str = str.replace("&#39;", "'");
+        str = str.replace("&lsquo;", "‘");
+        str = str.replace("lsquo;", "‘");
         str = str.replace("&rsquo;", "’");
+        str = str.replace("rsquo;", "’");
         str = str.replace("&mdash;", "—");
         str = str.replace("&ndash;", "–");
-        str = str.replace("$#65279","");
 		return str;
 	}
 	
