@@ -72,9 +72,9 @@ public class JsoupTextDown {
 			FileWriter fw=new FileWriter("E:\\"+textName,true);
 			BufferedWriter bufw=new BufferedWriter(fw);
 			for (Novel novel : novelList) {
-				bufw.write(novel.getTitle());
+				bufw.write(replace(novel.getTitle()));
 				bufw.newLine();
-				bufw.write(novel.getText());
+				bufw.write(replace(novel.getText()));
 				bufw.newLine();
 				bufw.flush();
 			}

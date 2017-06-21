@@ -25,7 +25,7 @@ public class TestNovel {
 			for (Novel novel : list) {
 				Map<String,String> map=JsoupTextDown.downText(novel.getUrl());
 				System.out.println(novel.getId()+"+++"+map.get("title"));
-				NovelService.updateNovel(novel.getId(), map.get("title"), map.get("text"));
+				NovelService.updateNovel(novel.getId(), JsoupTextDown.replace(map.get("title")),JsoupTextDown.replace(map.get("text")));
 			}
 		}
 	}
