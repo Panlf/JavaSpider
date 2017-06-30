@@ -19,7 +19,7 @@ import com.service.NovelService;
 public class JsoupTextDown {
 
 	public static void main(String[] args) throws Exception {
-		Document doc = Jsoup.connect("http://www.biqudu.com/16_16088/").get();
+		Document doc = Jsoup.connect("http://www.biqudu.com/47_47983/").get();
 		if(doc!=null){
 			Elements links=doc.getElementById("list").select("dd>a[href]");
 			for (Element link : links) {
@@ -27,16 +27,16 @@ public class JsoupTextDown {
 				String path="http://www.biqudu.com"+link.attr("href");
 				String title=link.text();
 				System.out.println(path+"---"+title);
-				if(NovelService.selectNovelURl(path)){
-					continue;
-				}
+//				if(NovelService.selectNovelURl(path)){
+//					continue;
+//				}
 				Map<String,String> content=downText(path);
 				NovelService.insertNovel(content.get("title"),path,content.get("text"));
 				System.out.println(content.get("title"));	
 			}
 		}
 		updateTheNull();
-		writeTheText("最强反派系统.txt");
+		writeTheText("逍遥小书生.txt");
 	}
 	
 	//获取题目和正文
