@@ -1,6 +1,10 @@
 package com.plf.httpclient;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
+import java.io.DataInputStream;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -9,6 +13,8 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.http.Header;
 import org.apache.http.HttpStatus;
@@ -105,6 +111,7 @@ public class HttpClientExample {
 	@Test
 	public void analyzeURL(){
 		String path="http://www.tuicool.com/articles/zQNfyaN";
+		int i=0;
 		try {
 			URL url=new URL(path);
 			URLConnection conn=url.openConnection();
@@ -114,7 +121,11 @@ public class HttpClientExample {
 			BufferedReader buff=new BufferedReader(insread);
 			String nextline=buff.readLine();
 			while(nextline != null){
-				System.out.println(nextline);
+				//System.out.println(nextline);
+				if(!getPattern(nextline).isEmpty()){
+					downloadPicture(getPattern(nextline),"tuicool"+i);
+					i++;
+				}
 				nextline=buff.readLine();
 			}
 		} catch (MalformedURLException e) {
@@ -125,5 +136,48 @@ public class HttpClientExample {
 			e.printStackTrace();
 		}
 
+	}
+	
+	@Test
+	public void TestUtil(){
+		String str="<p><img src=\"http://img1.tuicool.com/RR3eyyE.jpg!web\" class=\"alignCenter\" /> </p>";
+		System.out.println(getPattern(str));
+	}
+	public static String getPattern(String str){
+		String pattern="http:.+?\\.(jpg|gif|png)";
+		Pattern pa=Pattern.compile(pattern);
+		Matcher ma=pa.matcher(str);
+		if(ma.find()){
+			return ma.group();
+		}
+		return "";
+	}
+	
+	private static void downloadPicture(String urlList,String filename) {
+		  URL url = null;
+		  try {
+		      url = new URL(urlList);
+		      DataInputStream dataInputStream = new DataInputStream(url.openStream());
+		
+		      String imageName =  "E:/temp/"+filename+".jpg";
+		
+		      FileOutputStream fileOutputStream = new FileOutputStream(new File(imageName));
+		      ByteArrayOutputStream output = new ByteArrayOutputStream();
+		
+		      byte[] buffer = new byte[1024];
+		      int length;
+		
+		      while ((length = dataInputStream.read(buffer)) > 0) {
+		          output.write(buffer, 0, length);
+		      }
+		      //byte[] context=output.toByteArray();
+		      fileOutputStream.write(output.toByteArray());
+		      dataInputStream.close();
+		      fileOutputStream.close();
+			  } catch (MalformedURLException e) {
+			      e.printStackTrace();
+			  } catch (IOException e) {
+			      e.printStackTrace();
+		  }
 	}
 }
