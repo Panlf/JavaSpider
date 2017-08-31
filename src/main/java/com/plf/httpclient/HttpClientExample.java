@@ -11,23 +11,16 @@ import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.http.Header;
 import org.apache.http.HttpStatus;
-import org.apache.http.NameValuePair;
 import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.config.RequestConfig;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
-import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 import org.junit.Test;
 
@@ -37,6 +30,7 @@ import org.junit.Test;
  *
  */
 public class HttpClientExample {
+	//GET请求
 	@Test
 	public void TestGet() {
 		//CloseableHttpClient  httpClient=HttpClients.createDefault();
@@ -67,51 +61,11 @@ public class HttpClientExample {
 		}
 	}
 	
-	@Test
-	public void TestPost(){
-		CloseableHttpResponse response =null;
-		try{
-			CloseableHttpClient httpClient =HttpClients.createDefault();
-			 RequestConfig requestConfig = RequestConfig.custom()
-					 	.setConnectTimeout(1000)//设置连接超时时间
-		                .setConnectionRequestTimeout(1000)// 设置请求超时时间
-		                .setSocketTimeout(1000)
-		                .setRedirectsEnabled(true)//允许重定向
-		                .build();
-			
-			HttpPost httpPost = new HttpPost("http://zhannei.baidu.com/cse/search");
-			httpPost.setConfig(requestConfig);
-			List <NameValuePair> nvps = new ArrayList <NameValuePair>();
-			nvps.add(new BasicNameValuePair("s", "13603361664978768713"));
-			nvps.add(new BasicNameValuePair("search", "斗破苍穹"));
-			nvps.add(new BasicNameValuePair("click", "1"));
-			httpPost.setEntity(new UrlEncodedFormEntity(nvps,"utf-8"));
-			
-	        // 通过请求对象获取响应对象
-			response = httpClient.execute(httpPost);
-	        if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
-	               String result= EntityUtils.toString(response.getEntity(),"utf-8");
-	               System.out.println(result);
-	        } 
-	        if (response.getStatusLine().getStatusCode() == HttpStatus.SC_MOVED_TEMPORARILY) {
-	        	 Header header = response.getFirstHeader("location");
-	        	 System.out.println(header.getValue());
-	        }
-		}catch(Exception e){
-			e.printStackTrace();
-		}finally {
-			try {
-				response.close();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
-	}
-	
+	//分析URL
 	@Test
 	public void analyzeURL(){
 		String path="http://www.tuicool.com/articles/zQNfyaN";
-		int i=0;
+		String uuid="";
 		try {
 			URL url=new URL(path);
 			URLConnection conn=url.openConnection();
@@ -123,8 +77,8 @@ public class HttpClientExample {
 			while(nextline != null){
 				//System.out.println(nextline);
 				if(!getPattern(nextline).isEmpty()){
-					downloadPicture(getPattern(nextline),"tuicool"+i);
-					i++;
+					uuid=UUID.randomUUID().toString();//随机获取一个UUID
+					downloadPicture(getPattern(nextline),"tuicool"+uuid);
 				}
 				nextline=buff.readLine();
 			}
@@ -138,11 +92,14 @@ public class HttpClientExample {
 
 	}
 	
+	//测试正则表达式
 	@Test
 	public void TestUtil(){
 		String str="<p><img src=\"http://img1.tuicool.com/RR3eyyE.jpg!web\" class=\"alignCenter\" /> </p>";
 		System.out.println(getPattern(str));
 	}
+	
+	//图片正则表达式
 	public static String getPattern(String str){
 		String pattern="http:.+?\\.(jpg|gif|png)";
 		Pattern pa=Pattern.compile(pattern);
@@ -153,6 +110,7 @@ public class HttpClientExample {
 		return "";
 	}
 	
+	//根据URL下载图片
 	private static void downloadPicture(String urlList,String filename) {
 		  URL url = null;
 		  try {
