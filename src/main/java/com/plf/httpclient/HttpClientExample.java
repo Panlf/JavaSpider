@@ -15,13 +15,13 @@ import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.http.HttpStatus;
+/*import org.apache.http.HttpStatus;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
-import org.apache.http.util.EntityUtils;
+import org.apache.http.util.EntityUtils;*/
 import org.junit.Test;
 
 /**
@@ -33,8 +33,9 @@ public class HttpClientExample {
 	//GET请求
 	@Test
 	public void TestGet() {
+		String url="http://zhannei.baidu.com/cse/search?q=斗破苍穹&click=1&s=13603361664978768713&nsid=";
 		//CloseableHttpClient  httpClient=HttpClients.createDefault();
-		CloseableHttpResponse response=null;
+		/*CloseableHttpResponse response=null;
 		String url="http://zhannei.baidu.com/cse/search?q=斗破苍穹&click=1&s=13603361664978768713&nsid=";
 		try{
 			HttpGet request = new HttpGet(url);//这里发送get请求
@@ -58,7 +59,10 @@ public class HttpClientExample {
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-		}
+		}*/
+		HttpUtils httpUtils=new HttpUtils();
+		String result=httpUtils.sendGet(url);
+		System.out.println(result);
 	}
 	
 	//分析URL
