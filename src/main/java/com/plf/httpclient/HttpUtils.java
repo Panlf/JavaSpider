@@ -19,6 +19,19 @@ import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 
 public class HttpUtils {
+	
+	
+	//静态内部类的单例模式
+	private HttpUtils(){}
+	
+	private static class HttpUtilsInstance {
+        private static final HttpUtils INSTANCE = new HttpUtils();
+    }
+	
+	public static HttpUtils getInstance() {
+        return HttpUtilsInstance.INSTANCE;
+    }
+	
 	// 获取当前客户端对象
 	private static CloseableHttpClient httpClient = HttpClients.createDefault();  
 	//携带的信息

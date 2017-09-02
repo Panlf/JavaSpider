@@ -30,6 +30,7 @@ import org.junit.Test;
  *
  */
 public class HttpClientExample {
+	private static HttpUtils httpUtils=HttpUtils.getInstance();
 	//GET请求
 	@Test
 	public void TestGet() {
@@ -60,7 +61,6 @@ public class HttpClientExample {
 				e.printStackTrace();
 			}
 		}*/
-		HttpUtils httpUtils=new HttpUtils();
 		String result=httpUtils.sendGet(url);
 		System.out.println(result);
 	}
@@ -68,7 +68,7 @@ public class HttpClientExample {
 	//分析URL
 	@Test
 	public void analyzeURL(){
-		String path="http://www.tuicool.com/articles/zQNfyaN";
+		String path="http://www.27270.com/ent/meinvtupian/2017/225210.html";
 		String uuid="";
 		try {
 			URL url=new URL(path);
@@ -82,7 +82,7 @@ public class HttpClientExample {
 				//System.out.println(nextline);
 				if(!getPattern(nextline).isEmpty()){
 					uuid=UUID.randomUUID().toString();//随机获取一个UUID
-					downloadPicture(getPattern(nextline),"tuicool"+uuid);
+					downloadPicture(getPattern(nextline),uuid);
 				}
 				nextline=buff.readLine();
 			}
