@@ -13,6 +13,8 @@ import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.protocol.HttpClientContext;
+import org.apache.http.cookie.Cookie;
+import org.apache.http.impl.client.BasicCookieStore;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
@@ -32,8 +34,13 @@ public class HttpUtils {
         return HttpUtilsInstance.INSTANCE;
     }
 	
+	private static BasicCookieStore cookieStore = new BasicCookieStore();
+	
 	// 获取当前客户端对象
-	private static CloseableHttpClient httpClient = HttpClients.createDefault();  
+	private static CloseableHttpClient httpClient = HttpClients
+			.custom()
+			.setDefaultCookieStore(cookieStore)
+			.build();  
 	//携带的信息
     private static HttpClientContext context = new HttpClientContext();
     
@@ -84,6 +91,15 @@ public class HttpUtils {
           if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
           		entity = response.getEntity();
           		result= EntityUtils.toString(entity,"utf-8");
+          	    //获取cookie
+          		List<Cookie> cookies = cookieStore.getCookies();
+          	    if (cookies.isEmpty()) {
+                  System.out.println("None");
+                } else {
+                    for (int i = 0; i < cookies.size(); i++) {
+                        System.out.println(cookies.get(i).toString()+" ");
+                    }
+                }
            } 
           EntityUtils.consume(entity); //关闭
           return result;
