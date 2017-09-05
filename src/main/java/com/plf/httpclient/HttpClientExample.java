@@ -61,7 +61,7 @@ public class HttpClientExample {
 				e.printStackTrace();
 			}
 		}*/
-		String result=httpUtils.sendGet(url);
+		String result=httpUtils.sendGet(url,"");
 		System.out.println(result);
 	}
 	

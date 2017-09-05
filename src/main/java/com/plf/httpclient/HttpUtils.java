@@ -1,6 +1,7 @@
 package com.plf.httpclient;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -17,12 +18,16 @@ import org.apache.http.cookie.Cookie;
 import org.apache.http.impl.client.BasicCookieStore;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
+import org.apache.http.message.BasicHeader;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 
 public class HttpUtils {
 	
-	
+	private static Logger logger=LoggerFactory.getLogger(HttpUtils.class); 
 	//静态内部类的单例模式
 	private HttpUtils(){}
 	
@@ -51,13 +56,15 @@ public class HttpUtils {
             .setRedirectsEnabled(true)//默认允许自动重定向
             .build();
     
-	public String sendGet(String url){
+	public String sendGet(String url,String cookie){
+		logger.info("进入Get请求，当前的URL=====>{}",url);
 		CloseableHttpResponse response=null;
 		String result = null; 
 		HttpEntity entity=null;
 		try{
 			HttpGet get = new HttpGet(url); 
 			get.setConfig(requestConfig);
+			get.addHeader(new BasicHeader("Cookie",cookie));
 			//通过请求对象获取响应对象
             response = httpClient.execute(get, context);
             if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
@@ -72,10 +79,13 @@ public class HttpUtils {
 		return result;
 	}
 	
-	public String sendPost(String url,Map<String,String> map){
+	public Map<String,String> sendPost(String url,Map<String,String> map){
+		logger.info("进入Post请求，当前的URL=====>{}",url);
 		CloseableHttpResponse response = null;    
         String result = null;
         HttpEntity entity=null;
+        StringBuffer cookie=null;
+        Map<String,String> resultMap = null;
         try{
             HttpPost post = new HttpPost(url); 
             post.setConfig(requestConfig);
@@ -89,23 +99,29 @@ public class HttpUtils {
           //执行请求用execute方法    
           response = httpClient.execute(post, context);  
           if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
-          		entity = response.getEntity();
+        	  logger.info("请求成功...");
+        	  entity = response.getEntity();
           		result= EntityUtils.toString(entity,"utf-8");
           	    //获取cookie
           		List<Cookie> cookies = cookieStore.getCookies();
           	    if (cookies.isEmpty()) {
-                  System.out.println("None");
+          	    	logger.info("当前没有获取到cookie或者没有cookie");
                 } else {
+                	cookie = new StringBuffer();
                     for (int i = 0; i < cookies.size(); i++) {
-                        System.out.println(cookies.get(i).toString()+" ");
+                    	logger.info(cookies.get(i).toString());
+                    	cookie.append(cookies.get(i).toString()).append(";");
                     }
                 }
            } 
+          resultMap=new HashMap<String,String>();
+          resultMap.put("entity", result);
+          resultMap.put("cookie", cookie.toString());
           EntityUtils.consume(entity); //关闭
-          return result;
+          return resultMap;
         }catch(Exception e){
         	e.printStackTrace();
         }
-        return result;
+        return resultMap;
 	}
 }

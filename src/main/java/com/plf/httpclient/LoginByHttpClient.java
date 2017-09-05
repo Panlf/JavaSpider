@@ -27,7 +27,7 @@ public class LoginByHttpClient {
 	private void fetchParams(){
 		logger.info("开始获取登录的表单参数...");
 		loginURL="https://passport.csdn.net/account/login";
-		String html = httpUtils.sendGet(loginURL);    
+		String html = httpUtils.sendGet(loginURL,"");    
         Document doc = Jsoup.parse(html);    
         Element form = doc.select(".user-pass").get(0);    
         lt = form.select("input[name=lt]").get(0).val();    
@@ -61,12 +61,13 @@ public class LoginByHttpClient {
 		map.put("lt", lt);
 		map.put("execution", execution);
 		map.put("_eventId", _eventId);
-		
-		String result = httpUtils.sendPost(loginURL, map); 
-		
+		Map<String,String> resultmap= httpUtils.sendPost(loginURL, map);
+		String result = resultmap.get("entity"); 
+		String cookie = resultmap.get("cookie");
+		logger.info("最后获取到的cookie===>{}",cookie);
 		if (result.indexOf("redirect_back") > -1) {    
 			logger.info("登陆成功..."); 
-			writeText(result);
+			//writeText(result);
         } else if (result.indexOf("登录太频繁") > -1) {    
         	logger.info("登录太频繁，请稍后再试...");    
         } else {    
@@ -74,11 +75,11 @@ public class LoginByHttpClient {
         }  
 		
 		//访问子页面
-		/*String context=httpUtils.sendGet("http://www.csdn.net/");
+		String context=httpUtils.sendGet("http://www.csdn.net/",cookie);
 		if(context.length()>0){
 			writeText(context);
 			logger.info("下载完毕...");
-		}*/
+		}
 		
 		logger.info("程序全部结束...");
 	}
