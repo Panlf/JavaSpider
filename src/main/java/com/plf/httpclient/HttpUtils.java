@@ -8,6 +8,7 @@ import java.util.Map;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpStatus;
 import org.apache.http.NameValuePair;
+import org.apache.http.client.config.CookieSpecs;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -41,20 +42,29 @@ public class HttpUtils {
 	
 	private static BasicCookieStore cookieStore = new BasicCookieStore();
 	
-	// 获取当前客户端对象
-	private static CloseableHttpClient httpClient = HttpClients
-			.custom()
-			.setDefaultCookieStore(cookieStore)
-			.build();  
+	 
 	//携带的信息
     private static HttpClientContext context = new HttpClientContext();
     
-    private static RequestConfig requestConfig = RequestConfig.custom()
+    private static RequestConfig globalConfig  = RequestConfig.custom()
             .setConnectTimeout(5000)   //设置连接超时时间
             .setConnectionRequestTimeout(5000) // 设置请求超时时间
             .setSocketTimeout(5000)
             .setRedirectsEnabled(true)//默认允许自动重定向
+            .setCookieSpec(CookieSpecs.DEFAULT)
             .build();
+    
+    // 获取当前客户端对象
+  	private static CloseableHttpClient httpClient = HttpClients
+  			.custom().setDefaultRequestConfig(globalConfig)
+  			.setDefaultCookieStore(cookieStore)
+  			.build(); 
+    
+    RequestConfig localConfig = RequestConfig.copy(globalConfig)
+            .setCookieSpec(CookieSpecs.STANDARD_STRICT)
+            .build();
+    
+    
     
 	public String sendGet(String url,String cookie){
 		logger.info("进入Get请求，当前的URL=====>{}",url);
@@ -63,7 +73,8 @@ public class HttpUtils {
 		HttpEntity entity=null;
 		try{
 			HttpGet get = new HttpGet(url); 
-			get.setConfig(requestConfig);
+			get.setConfig(localConfig);
+			get.addHeader(new BasicHeader("User-Agent", "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.87 Safari/537.36"));
 			get.addHeader(new BasicHeader("Cookie",cookie));
 			//通过请求对象获取响应对象
             response = httpClient.execute(get, context);
@@ -88,7 +99,7 @@ public class HttpUtils {
         Map<String,String> resultMap = null;
         try{
             HttpPost post = new HttpPost(url); 
-            post.setConfig(requestConfig);
+            post.setConfig(localConfig);
             if(!map.isEmpty()){
             	List <NameValuePair> nvps = new ArrayList <NameValuePair>();
     			for (Map.Entry<String, String> entry : map.entrySet()) {
@@ -110,7 +121,10 @@ public class HttpUtils {
                 	cookie = new StringBuffer();
                     for (int i = 0; i < cookies.size(); i++) {
                     	logger.info(cookies.get(i).toString());
-                    	cookie.append(cookies.get(i).toString()).append(";");
+                    	cookie.append(cookies.get(i).getName())
+                    		  .append("=")
+                    		  .append(cookies.get(i).getValue())
+                    		  .append(";");
                     }
                 }
            } 

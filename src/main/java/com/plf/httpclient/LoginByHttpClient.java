@@ -75,8 +75,8 @@ public class LoginByHttpClient {
         }  
 		
 		//访问子页面
-		String context=httpUtils.sendGet("http://www.csdn.net/",cookie);
-		if(context.length()>0){
+		String context=httpUtils.sendGet("http://my.csdn.net/my/score",cookie);
+		if(context!=null && context.length()>0){
 			writeText(context);
 			logger.info("下载完毕...");
 		}
