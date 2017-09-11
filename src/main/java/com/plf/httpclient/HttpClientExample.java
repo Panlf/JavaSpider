@@ -24,6 +24,7 @@ import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;*/
 import org.junit.Test;
 
+
 /**
  * httpClient发送请求
  * @author Panlf 2017年7月18日下午10:31:35
@@ -81,6 +82,7 @@ public class HttpClientExample {
 			while(nextline != null){
 				//System.out.println(nextline);
 				if(!getPattern(nextline).isEmpty()){
+					getPattern(nextline);
 					uuid=UUID.randomUUID().toString();//随机获取一个UUID
 					downloadPicture(getPattern(nextline),uuid);
 				}
@@ -105,11 +107,12 @@ public class HttpClientExample {
 	
 	//图片正则表达式
 	public static String getPattern(String str){
-		String pattern="http:.+?\\.(jpg|gif|png)";
+		String pattern="src=\"http:.+?\\.(jpg|gif|png)";
 		Pattern pa=Pattern.compile(pattern);
 		Matcher ma=pa.matcher(str);
 		if(ma.find()){
-			return ma.group();
+			//System.out.println(ma.group().replace("src=\"", ""));
+			return ma.group().replace("src=\"", "");
 		}
 		return "";
 	}
