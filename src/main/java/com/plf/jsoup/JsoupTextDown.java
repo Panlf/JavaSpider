@@ -12,6 +12,7 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import org.junit.Test;
 
 import com.pojo.Novel;
 import com.service.NovelService;
@@ -118,5 +119,39 @@ public class JsoupTextDown {
 	public static void writeTheText(String textname){
 		List<Novel> novelList=NovelService.selectNovel();
 		JsoupTextDown.writeText(novelList,textname);
+	}
+	
+	@Test
+	public void downText(){
+		String path="http://www.biqudu.com/43_43821/2520341.html";
+		try{
+			Document doc = Jsoup.connect(path)
+					.header("User-Agent", "Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:49.0) Gecko/20100101 Firefox/49.0")
+					.header("Connection", "close")//如果是这种方式，这里务必带上
+					.timeout(50000)//超时时间
+					.get();
+			String text="",title="";
+			if(doc!=null){
+				title=doc.select("h1").text().toString();
+				//title=replace(StringEscapeUtils.escapeHtml4(title));
+				text=doc.getElementById("content").html().toString();
+				//text=replace(StringEscapeUtils.escapeHtml4(text));
+				//System.out.println(text.substring(1));
+				FileWriter fw=new FileWriter("E:\\aa.txt",true);
+				BufferedWriter bufw=new BufferedWriter(fw);
+			
+				text=replace(text);
+				text=text.replace("<br />", "\r\n");
+				bufw.write(title);
+				bufw.newLine();
+				bufw.write(text);
+				bufw.newLine();
+				bufw.flush();
+				
+				bufw.close();
+			}
+		}catch(Exception e){
+			System.out.println(e.getMessage());
+		}
 	}
 }
