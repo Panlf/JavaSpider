@@ -36,32 +36,6 @@ public class HttpClientExample {
 	@Test
 	public void TestGet() {
 		String url="http://zhannei.baidu.com/cse/search?q=斗破苍穹&click=1&s=13603361664978768713&nsid=";
-		//CloseableHttpClient  httpClient=HttpClients.createDefault();
-		/*CloseableHttpResponse response=null;
-		String url="http://zhannei.baidu.com/cse/search?q=斗破苍穹&click=1&s=13603361664978768713&nsid=";
-		try{
-			HttpGet request = new HttpGet(url);//这里发送get请求
-            // 获取当前客户端对象
-			CloseableHttpClient httpClient =HttpClients.createDefault();
-            // 通过请求对象获取响应对象
-            response = httpClient.execute(request);
-            
-            // 判断网络连接状态码是否正常(0--200都数正常)
-            if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
-               String result= EntityUtils.toString(response.getEntity(),"utf-8");
-               System.out.println(result);
-            } 
-		}catch(ClientProtocolException e){
-			e.printStackTrace();
-		}catch(IOException e1){
-			e1.printStackTrace();
-		}finally{
-			try {
-				response.close();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}*/
 		String result=httpUtils.sendGet(url,null);
 		System.out.println(result);
 	}
@@ -80,7 +54,6 @@ public class HttpClientExample {
 			BufferedReader buff=new BufferedReader(insread);
 			String nextline=buff.readLine();
 			while(nextline != null){
-				//System.out.println(nextline);
 				if(!getPattern(nextline).isEmpty()){
 					getPattern(nextline);
 					uuid=UUID.randomUUID().toString();//随机获取一个UUID
