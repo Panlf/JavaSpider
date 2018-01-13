@@ -6,9 +6,9 @@ import java.io.InputStream;
 import java.net.URL;
 import java.net.URLConnection;
 
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.select.Elements;
+//import org.jsoup.Jsoup;
+//import org.jsoup.nodes.Document;
+//import org.jsoup.select.Elements;
 
 public class JsoupVideoDown {
 
