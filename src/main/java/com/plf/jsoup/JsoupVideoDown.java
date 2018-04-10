@@ -15,14 +15,15 @@ public class JsoupVideoDown {
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		try {
-			String path="http://i.snssdk.com/neihan/video/playback/?video_id=5b54540731dc414c93dd3001e1877a88&quality=480p&line=0&is_gif=0.mp4";
-			downVideo(path,"美女");
+			String path="";
+			downVideo(path,"fourBeauty");
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
 	
+	//下载大文件速度很慢需要改进
 	public static void downVideo(String path,String fileName) throws IOException{
 		URL url = new URL(path);
 		URLConnection uc = url.openConnection();

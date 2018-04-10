@@ -6,6 +6,8 @@ import java.io.IOException;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.jsoup.Jsoup;
@@ -17,15 +19,18 @@ import org.junit.Test;
 import com.pojo.Novel;
 import com.service.NovelService;
 
+//下载http://www.biqudu.com/
 public class JsoupTextDown {
 
 	public static void main(String[] args) throws Exception {
-		Document doc = Jsoup.connect("http://www.biqudu.com/47_47983/").get();
+		//Document doc = Jsoup.connect("http://www.biqudu.com/47_47983/").get();
+		Document doc = Jsoup.connect("https://www.biqudu.com/3_3607/").get();
 		if(doc!=null){
 			Elements links=doc.getElementById("list").select("dd>a[href]");
 			for (Element link : links) {
 				Thread.sleep(2000);
-				String path="http://www.biqudu.com"+link.attr("href");
+				//String path="http://www.biqudu.com"+link.attr("href");
+				String path="https://www.biqudu.com"+link.attr("href");
 				String title=link.text();
 				System.out.println(path+"---"+title);
 //				if(NovelService.selectNovelURl(path)){
@@ -37,7 +42,7 @@ public class JsoupTextDown {
 			}
 		}
 		updateTheNull();
-		writeTheText("逍遥小书生.txt");
+		writeTheText("一世之尊 .txt");
 	}
 	
 	//获取题目和正文
@@ -67,6 +72,9 @@ public class JsoupTextDown {
 		}
 	}
 	
+	 //替换js语句
+	//<script>[\s\S]+?</script> 
+	//\\s+去除空格   \\s{2} 去除2个空格
 	//写入txt文件
 	public static void writeText(List<Novel> novelList,String textName){
 		try {
@@ -75,7 +83,11 @@ public class JsoupTextDown {
 			for (Novel novel : novelList) {
 				bufw.write(replace(novel.getTitle()));
 				bufw.newLine();
-				bufw.write(replace(novel.getText()));
+				String text = replace(novel.getText());
+				//Pattern r = Pattern.compile("<script>[\\s\\S]+?</script>");
+				Pattern r = Pattern.compile("\\s+");
+		        Matcher m = r.matcher(text);
+				bufw.write(m.replaceAll("\r\n"));
 				bufw.newLine();
 				bufw.flush();
 			}
@@ -101,7 +113,9 @@ public class JsoupTextDown {
         str = str.replace("&rsquo;", "’");
         str = str.replace("rsquo;", "’");
         str = str.replace("&mdash;", "—");
+        str = str.replace("mdash;", "—");
         str = str.replace("&ndash;", "–");
+        str = str.replace("<br />", "\r\n");
 		return str;
 	}
 	
@@ -123,7 +137,7 @@ public class JsoupTextDown {
 	
 	@Test
 	public void downText(){
-		String path="http://www.biqudu.com/43_43821/2520341.html";
+		String path="http://www.silukeke.com/0/9/9601/4939784.html";
 		try{
 			Document doc = Jsoup.connect(path)
 					.header("User-Agent", "Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:49.0) Gecko/20100101 Firefox/49.0")
@@ -144,7 +158,9 @@ public class JsoupTextDown {
 				text=text.replace("<br />", "\r\n");
 				bufw.write(title);
 				bufw.newLine();
-				bufw.write(text);
+				Pattern r = Pattern.compile("<script>[\\s\\S]+?</script>");
+		        Matcher m = r.matcher(text);
+				bufw.write(m.replaceAll(""));
 				bufw.newLine();
 				bufw.flush();
 				
