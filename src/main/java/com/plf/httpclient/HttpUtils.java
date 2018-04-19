@@ -51,7 +51,7 @@ public class HttpUtils {
             .setConnectionRequestTimeout(5000) // 设置请求超时时间
             .setSocketTimeout(5000)
             .setRedirectsEnabled(true)//默认允许自动重定向
-            .setCookieSpec(CookieSpecs.DEFAULT)
+            .setCookieSpec(CookieSpecs.STANDARD_STRICT)
             .build();
     
     // 获取当前客户端对象
@@ -130,7 +130,7 @@ public class HttpUtils {
            } 
           resultMap=new HashMap<String,String>();
           resultMap.put("entity", result);
-          resultMap.put("cookie", cookie.toString());
+          resultMap.put("cookie", cookie==null?null:cookie.toString());
           EntityUtils.consume(entity); //关闭
           return resultMap;
         }catch(Exception e){
