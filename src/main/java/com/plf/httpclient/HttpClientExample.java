@@ -8,7 +8,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.InetSocketAddress;
 import java.net.MalformedURLException;
+import java.net.Proxy;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.UUID;
@@ -43,11 +45,13 @@ public class HttpClientExample {
 	//分析URL
 	@Test
 	public void analyzeURL(){
-		String path="http://www.27270.com/ent/meinvtupian/2017/225210.html";
+		String path="http://www.27270.com/ent/meinvtupian/2017/237717.html";
 		String uuid="";
 		try {
 			URL url=new URL(path);
-			URLConnection conn=url.openConnection();
+			//增加代理功能
+			Proxy proxy =new Proxy(Proxy.Type.HTTP,new InetSocketAddress("180.101.205.253",8888));
+			URLConnection conn=url.openConnection(proxy);
 			conn.connect();
 			InputStream ins=conn.getInputStream();
 			InputStreamReader insread=new InputStreamReader(ins,"utf-8");
