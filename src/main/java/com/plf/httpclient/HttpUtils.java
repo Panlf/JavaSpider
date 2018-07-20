@@ -1,7 +1,6 @@
 package com.plf.httpclient;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -25,7 +24,11 @@ import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
+/**
+ * HttpClient的访问Http工具类
+ * @author plf 2018年7月20日下午9:25:41
+ *
+ */
 public class HttpUtils {
 	
 	private static Logger logger=LoggerFactory.getLogger(HttpUtils.class); 
@@ -44,7 +47,7 @@ public class HttpUtils {
 	
 	 
 	//携带的信息
-    private static HttpClientContext context = new HttpClientContext();
+    private static HttpClientContext context = HttpClientContext.create();
     
     private static RequestConfig globalConfig  = RequestConfig.custom()
             .setConnectTimeout(5000)   //设置连接超时时间
@@ -54,28 +57,21 @@ public class HttpUtils {
             .setCookieSpec(CookieSpecs.STANDARD_STRICT)
             .build();
     
-    // 获取当前客户端对象
+	// 获取当前客户端对象
   	private static CloseableHttpClient httpClient = HttpClients
   			.custom().setDefaultRequestConfig(globalConfig)
   			.setDefaultCookieStore(cookieStore)
   			.build(); 
     
-    RequestConfig localConfig = RequestConfig.copy(globalConfig)
-            .setCookieSpec(CookieSpecs.STANDARD_STRICT)
-            .build();
-    
-    
-    
-	public String sendGet(String url,String cookie){
+	public String sendGet(String url){
 		logger.info("进入Get请求，当前的URL=====>{}",url);
 		CloseableHttpResponse response=null;
 		String result = null; 
 		HttpEntity entity=null;
 		try{
 			HttpGet get = new HttpGet(url); 
-			get.setConfig(localConfig);
+			get.setConfig(globalConfig);
 			get.addHeader(new BasicHeader("User-Agent", "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.87 Safari/537.36"));
-			get.addHeader(new BasicHeader("Cookie",cookie));
 			//通过请求对象获取响应对象
             response = httpClient.execute(get, context);
             if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
@@ -90,16 +86,15 @@ public class HttpUtils {
 		return result;
 	}
 	
-	public Map<String,String> sendPost(String url,Map<String,String> map){
+	public String sendPost(String url,Map<String,String> map){
 		logger.info("进入Post请求，当前的URL=====>{}",url);
 		CloseableHttpResponse response = null;    
         String result = null;
         HttpEntity entity=null;
-        StringBuffer cookie=null;
-        Map<String,String> resultMap = null;
         try{
             HttpPost post = new HttpPost(url); 
-            post.setConfig(localConfig);
+            post.addHeader(new BasicHeader("User-Agent", "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.87 Safari/537.36"));
+            post.setConfig(globalConfig);
             if(!map.isEmpty()){
             	List <NameValuePair> nvps = new ArrayList <NameValuePair>();
     			for (Map.Entry<String, String> entry : map.entrySet()) {
@@ -112,30 +107,18 @@ public class HttpUtils {
           if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
         	  logger.info("请求成功...");
         	  entity = response.getEntity();
-          		result= EntityUtils.toString(entity,"utf-8");
+          	  result= EntityUtils.toString(entity,"utf-8");
           	    //获取cookie
           		List<Cookie> cookies = cookieStore.getCookies();
           	    if (cookies.isEmpty()) {
           	    	logger.info("当前没有获取到cookie或者没有cookie");
-                } else {
-                	cookie = new StringBuffer();
-                    for (int i = 0; i < cookies.size(); i++) {
-                    	logger.info(cookies.get(i).toString());
-                    	cookie.append(cookies.get(i).getName())
-                    		  .append("=")
-                    		  .append(cookies.get(i).getValue())
-                    		  .append(";");
-                    }
-                }
+          	    }
            } 
-          resultMap=new HashMap<String,String>();
-          resultMap.put("entity", result);
-          resultMap.put("cookie", cookie==null?null:cookie.toString());
           EntityUtils.consume(entity); //关闭
-          return resultMap;
+          return result;
         }catch(Exception e){
         	e.printStackTrace();
         }
-        return resultMap;
+        return null;
 	}
 }

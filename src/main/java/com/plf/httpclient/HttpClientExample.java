@@ -38,7 +38,7 @@ public class HttpClientExample {
 	@Test
 	public void TestGet() {
 		String url="http://zhannei.baidu.com/cse/search?q=斗破苍穹&click=1&s=13603361664978768713&nsid=";
-		String result=httpUtils.sendGet(url,null);
+		String result=httpUtils.sendGet(url);
 		System.out.println(result);
 	}
 	

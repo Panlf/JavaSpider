@@ -4,6 +4,8 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -24,6 +26,7 @@ import org.apache.http.cookie.Cookie;
 import org.apache.http.impl.client.BasicCookieStore;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
+import org.apache.http.message.BasicHeader;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 import org.jsoup.Jsoup;
@@ -49,9 +52,14 @@ public class HttpClientLogin {
 		
 		context.setCookieStore(cookieStore);
 		
+		Collection<BasicHeader> colletion=new HashSet<BasicHeader>();
+		colletion.add(new BasicHeader("User-Agent", "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.87 Safari/537.36"));
+		
 		CloseableHttpClient httpClient = HttpClients
-	  			.custom().setDefaultRequestConfig(globalConfig)
+	  			.custom()
+	  			.setDefaultRequestConfig(globalConfig)
 	  			.setDefaultCookieStore(cookieStore)
+	  			.setDefaultHeaders(colletion)
 	  			.build(); 
 		
 		CloseableHttpResponse response=null;
@@ -72,10 +80,11 @@ public class HttpClientLogin {
 			e.printStackTrace();
 		}
         
-		get = new HttpGet("https://toutiao.io/ssignin"); 
+		get = new HttpGet("https://toutiao.io/signin-email"); 
 		response = httpClient.execute(get);
 		HttpEntity entity = response.getEntity();
-    	String html= EntityUtils.toString(entity,"utf-8");  
+    	String html= EntityUtils.toString(entity,"utf-8"); 
+    	
         Document doc = Jsoup.parse(html);    
         Element form = doc.select("#main form").get(0);    
         String utf8 = form.select("input[name=utf8]").get(0).val();    
