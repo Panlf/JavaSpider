@@ -16,8 +16,8 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.junit.Test;
 
-import com.pojo.Novel;
-import com.service.NovelService;
+import com.plf.mybatis.pojo.Novel;
+import com.plf.mybatis.service.NovelService;
 
 //下载http://www.biqudu.com/
 public class JsoupTextDown {

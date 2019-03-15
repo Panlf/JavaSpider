@@ -1,9 +1,10 @@
-package com.dao;
+package com.plf.mybatis.dao;
 
-import com.pojo.Novel;
-import com.pojo.NovelExample;
 import java.util.List;
 import org.apache.ibatis.annotations.Param;
+
+import com.plf.mybatis.pojo.Novel;
+import com.plf.mybatis.pojo.NovelExample;
 
 public interface NovelMapper {
     int countByExample(NovelExample example);

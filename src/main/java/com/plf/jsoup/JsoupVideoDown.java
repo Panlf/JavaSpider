@@ -13,12 +13,10 @@ import java.net.URLConnection;
 public class JsoupVideoDown {
 
 	public static void main(String[] args) {
-		// TODO Auto-generated method stub
 		try {
 			String path="";
 			downVideo(path,"fourBeauty");
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}

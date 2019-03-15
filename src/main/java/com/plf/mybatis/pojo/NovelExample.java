@@ -1,4 +1,4 @@
-package com.pojo;
+package com.plf.mybatis.pojo;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -6,7 +6,7 @@ PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
 	<properties resource="db.properties"></properties>
 		
 	<typeAliases> 
-		<package name="com.pojo"/>
+		<package name="com.plf.mybatis.pojo"/>
 	</typeAliases>
 	
 	
@@ -26,6 +26,6 @@ PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
 		</environment>
 	</environments>
 	<mappers>
-		<mapper resource="com/dao/NovelMapper.xml"/>
+		<mapper resource="com/plf/mybatis/dao/NovelMapper.xml"/>
 	</mappers>
 </configuration>

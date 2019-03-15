@@ -1,4 +1,4 @@
-package com.pojo;
+package com.plf.mybatis.pojo;
 
 public class Novel {
     private Integer id;

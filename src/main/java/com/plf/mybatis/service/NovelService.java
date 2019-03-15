@@ -1,4 +1,4 @@
-package com.service;
+package com.plf.mybatis.service;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -9,10 +9,10 @@ import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 
-import com.dao.NovelMapper;
-import com.pojo.Novel;
-import com.pojo.NovelExample;
-import com.pojo.NovelExample.Criteria;
+import com.plf.mybatis.dao.NovelMapper;
+import com.plf.mybatis.pojo.Novel;
+import com.plf.mybatis.pojo.NovelExample;
+import com.plf.mybatis.pojo.NovelExample.Criteria;
 
 /**
  * novel数据库的操作

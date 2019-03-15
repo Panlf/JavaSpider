@@ -6,8 +6,8 @@ import java.util.Map;
 import org.junit.Test;
 
 import com.plf.jsoup.JsoupTextDown;
-import com.pojo.Novel;
-import com.service.NovelService;
+import com.plf.mybatis.pojo.Novel;
+import com.plf.mybatis.service.NovelService;
 
 public class TestNovel {
 	@Test
