@@ -19,7 +19,7 @@ public class Crawler4j extends WebCrawler {
 	 public boolean shouldVisit(Page referringPage, WebURL url) {
          String href = url.getURL().toLowerCase();
          return !FILTERS.matcher(href).matches()
-                && href.startsWith("http://www.27270.com/ent/meinvtupian/");
+                && href.startsWith("https://www.2717.com/ent/meinvtupian/");
      }
 	 
 	 public void visit(Page page) {
