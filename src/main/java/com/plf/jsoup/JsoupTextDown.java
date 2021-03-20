@@ -93,7 +93,6 @@ public class JsoupTextDown {
 			}
 			bufw.close();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
